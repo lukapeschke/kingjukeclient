@@ -83,52 +83,66 @@ class Shell(object):
         new_parser.set_defaults(func=func)
 
     def __init__(self):
-        self.client_session = ClientSession()
         parser = argparse.ArgumentParser(
             description="Client for yt-jukebox"
+        )
+        parser.add_argument(
+            '--host',
+            required=False,
+            default='127.0.0.1',
+            help='Host of the kingjuke server (defaults to 127.0.0.1)'
+        )
+        parser.add_argument(
+            '--port',
+            required=False,
+            default=9090,
+            type=int,
+            help='Port on which the kingjuke server'
+            ' is listening (defaults to 9090)'
         )
         subparsers = parser.add_subparsers(
             title='Supported commands', dest='command')
         subparsers.required = True
-
         self.add_new_parser(subparsers, name='submit',
                             help='Submit a song',
                             arg_help='URL of the song',
-                            arg='URL', func=self.client_session.submit)
+                            arg='URL', func='submit')
 
         self.add_new_parser(subparsers, name='playlist',
                             help='Get the current playlist',
-                            func=self.client_session.get_playlist)
+                            func='get_playlist')
 
         self.add_new_parser(subparsers, name='next',
                             help='Play next song (admin)',
-                            func=self.client_session.play_next_song)
+                            func='play_next_song')
 
         self.add_new_parser(subparsers, name='play',
                             help='Restart paused song (admin)',
-                            func=self.client_session.play)
+                            func='play')
 
         self.add_new_parser(subparsers, name='pause',
                             help='Pause music (admin)',
-                            func=self.client_session.pause)
+                            func='pause')
 
         self.add_new_parser(subparsers, name='upvote',
                             help='Upvote a song',
                             arg_help='Name of the song',
-                            arg='SONG', func=self.client_session.upvote)
+                            arg='SONG', func='upvote')
 
         self.add_new_parser(subparsers, name='downvote',
                             help='Downvote a song',
                             arg_help='Name of the song',
-                            arg='SONG', func=self.client_session.downvote)
+                            arg='SONG', func='downvote')
 
         self.add_new_parser(subparsers, name='delete',
                             help='Delete a song (admin)',
                             arg_help='Name of the song',
-                            arg='SONG', func=self.client_session.delete)
+                            arg='SONG', func='delete')
 
         args = parser.parse_args(argv[1:])
-        args.func(args)
+        self.client_session = ClientSession(host=args.host, port=args.port)
+        func = getattr(self.client_session, args.func)
+        func(args)
 
 
 def main():

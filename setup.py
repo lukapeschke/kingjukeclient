@@ -10,7 +10,7 @@ setup(
     classifiers=[
         "Programming Language :: Python :: 3"
     ],
-    entry_points= {
+    entry_points={
         "console_scripts": ["kjuke=kingjukeclient.client:main"]
     },
     install_requires=[
