@@ -24,6 +24,7 @@ class ClientSession(object):
         url = self.host + '/playlist'
         r = requests.get(url)
         playlist = json.loads(r.text)
+        print('\nTheme: {}\n'.format(playlist['theme']))
         if 'title' not in playlist['first_song'].keys():
             playlist['first_song']['title'] = 'Nothing :-('
         print(u"Currently Playing:\n\n    {}".format(
@@ -66,6 +67,10 @@ class ClientSession(object):
     def delete(self, data):
         url = self.host + '/admin/delete'
         requests.delete(url, auth=self.get_identity(), data=data.SONG)
+
+    def set_theme(self, data):
+        url = self.host + '/admin/theme'
+        requests.post(url, auth=self.get_identity(), data=data.THEME)
 
 
 class Shell(object):
@@ -138,6 +143,11 @@ class Shell(object):
                             help='Delete a song (admin)',
                             arg_help='Name of the song',
                             arg='SONG', func='delete')
+
+        self.add_new_parser(subparsers, name='theme',
+                            help='Set the playlist theme (admin)',
+                            arg_help='theme',
+                            arg='THEME', func='set_theme')
 
         args = parser.parse_args(argv[1:])
         self.client_session = ClientSession(host=args.host, port=args.port)
