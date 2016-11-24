@@ -26,12 +26,12 @@ class ClientSession(object):
         playlist = json.loads(r.text)
         if 'title' not in playlist['first_song'].keys():
             playlist['first_song']['title'] = 'Nothing :-('
-        print("Currently Playing:\n\n    {}".format(
+        print(u"Currently Playing:\n\n    {}".format(
             playlist['first_song']['title'])
         )
         print("\nNext:\n")
         for i in playlist['playlist']:
-            print("    {}  {}".format(i['score'], i['title']))
+            print(u"    {}  {}".format(i['score'], i['title']))
 
     def upvote(self, data):
         url = self.host + '/vote/up/' + data.SONG
