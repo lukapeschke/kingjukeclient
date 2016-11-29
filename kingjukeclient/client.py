@@ -76,6 +76,16 @@ class ClientSession(object):
         url = self.host + '/admin/theme'
         requests.post(url, auth=self.get_identity(), data=data.THEME)
 
+    def add_tags(self, data):
+        url = self.host + '/admin/add_tags'
+        req_data = json.dumps(data.tag or [])
+        requests.post(url, auth=self.get_identity(), data=req_data)
+
+    def remove_tags(self, data):
+        url = self.host + '/admin/remove_tags'
+        req_data = json.dumps(data.tag or [])
+        requests.post(url, auth=self.get_identity(), data=req_data)
+
 
 class Shell(object):
     @staticmethod
@@ -154,6 +164,16 @@ class Shell(object):
                             help='Set the playlist theme (admin)',
                             arg_help='theme',
                             arg='THEME', func='set_theme')
+
+        tag_parser = self.add_new_parser(subparsers, name='add-tag',
+                                         help='Authorize a tag (admin)',
+                                         func='add_tags')
+        tag_parser.add_argument('-t', '--tag', action='append', required=True)
+
+        tag_parser = self.add_new_parser(subparsers, name='remove-tag',
+                                         help='Forbid a tag (admin)',
+                                         func='remove_tags')
+        tag_parser.add_argument('-t', '--tag', action='append', required=True)
 
         args = parser.parse_args(argv[1:])
         self.client_session = ClientSession(host=args.host, port=args.port)
