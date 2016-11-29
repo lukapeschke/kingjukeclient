@@ -22,7 +22,7 @@ class ClientSession(object):
             'url': data.URL,
             'tags': (data.tag or [])
         }
-        requests.post(url, data=request_data)
+        requests.post(url, data=json.dumps(request_data))
 
     def get_playlist(self, data):
         url = self.host + '/playlist'
