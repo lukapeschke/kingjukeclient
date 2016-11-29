@@ -18,7 +18,11 @@ class ClientSession(object):
 
     def submit(self, data):
         url = self.host + '/playlist'
-        requests.post(url, data=data.URL)
+        request_data = {
+            'url': data.URL,
+            'tags': (data.tag or [])
+        }
+        requests.post(url, data=request_data)
 
     def get_playlist(self, data):
         url = self.host + '/playlist'
@@ -86,6 +90,7 @@ class Shell(object):
                                     help=arg_help,
                                     type=str)
         new_parser.set_defaults(func=func)
+        return new_parser
 
     def __init__(self):
         parser = argparse.ArgumentParser(
@@ -108,10 +113,11 @@ class Shell(object):
         subparsers = parser.add_subparsers(
             title='Supported commands', dest='command')
         subparsers.required = True
-        self.add_new_parser(subparsers, name='submit',
-                            help='Submit a song',
-                            arg_help='URL of the song',
-                            arg='URL', func='submit')
+        submit_parser = self.add_new_parser(subparsers, name='submit',
+                                            help='Submit a song',
+                                            arg_help='URL of the song',
+                                            arg='URL', func='submit')
+        submit_parser.add_argument('-t', '--tag', action='append')
 
         self.add_new_parser(subparsers, name='playlist',
                             help='Get the current playlist',
