@@ -4,7 +4,7 @@ setup(
     name="kingjukeclient",
     version="0.1dev",
     author="Luka Peschke",
-    author_email="luka.peschke@epitech.eu",
+    author_email="mail@lukapeschke.com",
     license="MIT",
     packages=find_packages(),
     classifiers=[
